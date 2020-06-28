@@ -1,0 +1,3 @@
+Flask==1.1.2
+Flask-Cors==3.0.8
+py-starbound==1.0.0

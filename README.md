@@ -1,24 +1,26 @@
 # starbound_modder
 
 ## Project setup
+
+### UI
 ```
 yarn install
 ```
+### Server
+Set up and activate a python environment
+```
+cd server
+pip install -r requirements.txt
+```
 
-### Compiles and hot-reloads for development
+## Local Deployment
+
+### UI (with hot reloading)
 ```
 yarn serve
 ```
-
-### Compiles and minifies for production
+### Server (in another terminal with activated env)
 ```
-yarn build
+cd server
+python server.py
 ```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
