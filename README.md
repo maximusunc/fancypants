@@ -9,8 +9,7 @@ yarn install
 ### Server
 Set up and activate a python environment
 ```
-cd server
-pip install -r requirements.txt
+pip install -r server/requirements.txt
 ```
 
 ## Local Deployment
@@ -21,6 +20,5 @@ yarn serve
 ```
 ### Server (in another terminal with activated env)
 ```
-cd server
-python server.py
+./main.sh
 ```

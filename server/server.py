@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 """CLI for encoding/decoding Starbound player files."""
-import argparse
 from collections import namedtuple
 from datetime import datetime
 import os
-import json
 from shutil import copyfile
-import starbound
-from flask import Flask, request
-from flask_cors import CORS
+from typing import List
 
-app = Flask("starbound_modder")
+from fastapi import FastAPI
+import starbound
+from starlette.middleware.cors import CORSMiddleware
+
+APP = FastAPI(
+    title='Starbound Modder',
+    version='1.0.0',
+)
 
 # enable CORS
-CORS(app, resources={r'/*': {'origins': '*'}})
+APP.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 71db19adaa3ac911aaaf1792ab65856d.player
 
@@ -47,7 +56,7 @@ def decode(player_uuid):
     with open(player_file, 'rb') as f:
         player = starbound.read_sbvj01(f)
 
-    return json.dumps(player)
+    return player
 
 
 def encode(player_uuid, player_obj):
@@ -76,41 +85,15 @@ def encode(player_uuid, player_obj):
         starbound.write_sbvj01(fh, player)
 
 
-@app.route('/decode/<string:player_id>', methods=['GET'])
-def decode_player(player_id):
+@APP.get('/decode/{player_id}')
+def decode_player(player_id: str):
     """Recieve the player_id from UI."""
     player = decode(player_id)
-    return player, 200
+    return player
 
 
-@app.route('/encode/<string:player_id>', methods=['POST'])
-def encode_player(player_id):
+@APP.post('/encode/{player_id}')
+def encode_player(player_id: str, player: List):
     """Recieve the player_id from UI."""
-    player = request.json
     encode(player_id, player)
-    return 'Success', 200
-
-
-# def shutdown_server():
-#     """Shut down the server after handling current requests."""
-#     func = request.environ.get('werkzeug.server.shutdown')
-#     if func is None:
-#         raise RuntimeError('Not running the server')
-#     func()
-
-
-# @app.route('/shutdown')
-# def shutdown():
-#     """Allow frontend to shut down server."""
-#     shutdown_server()
-#     return 'Server is shutting down...'
-
-
-if __name__ == '__main__':
-
-    app.run(
-        host='0.0.0.0',
-        port=5748,
-        debug=False,
-        use_reloader=False,
-    )
+    return 'Success'
